@@ -1,53 +1,99 @@
-document.addEventListener("click", (e)=>{
-    if(e.target.className == "surprise"){
-        e.target.remove()
+const currentDisplay = document.querySelector(".current-display")
+const preDisplay = document.querySelector(".pre-display")
+
+//the function that clears everything on display and result Array
+const allClear = (btn)=>{
+    if(btn.innerText =="AC"){
+        result = []
+        preDisplay.innerText = ""
+        currentDisplay.innerText = ""
+        return;
     }
+}
+
+// the function that makes number negative or positive
+const negPos = (btn)=>{
+    if(btn.innerText =="±" && currentDisplay.innerText){
+        currentDisplay.innerText = parseFloat(currentDisplay.innerText) * -1
+    }
+}
+// the function that adds a comma if number hasn't already one
+const comma = (btn)=>{
+    if(btn.innerText == ","){
+        if (currentDisplay.innerText.split("").includes(".")){
+            return
+        }else{
+            currentDisplay.innerText += "."
+        }
+    }
+}
+// the function that calculates percentages
+const percentage = (btn) =>{
+    if(btn.innerText == "%" && currentDisplay.innerText){
+        currentDisplay.innerText = parseFloat(currentDisplay.innerText) * 0.01
+    }
+}
+
+
+let result = []
+document.querySelector(".buttons").addEventListener("click", (e)=>{
+    if (e.target.matches(".num")){
+        currentDisplay.innerText += e.target.innerText
+    }
+    else if(e.target.matches(".operator")){
+        result.push(parseFloat(currentDisplay.innerText))
+        result.push(e.target.innerText)
+        
+        
+        preDisplay.innerText += currentDisplay.innerText + e.target.innerText 
+        currentDisplay.innerText = ""
+        
+        calculate(e.target)
+    }else if (e.target.matches(".function") || e.target.matches(".comma") ){
+        allClear(e.target)
+        negPos(e.target)
+        percentage(e.target)
+        comma(e.target)
+    }
+    console.log(result)
+    
 })
 
 
-
-
-const container = document.querySelector(".container")
-const current = document.querySelector(".current-display")
-let result = []
-container.addEventListener("click", (e)=>{
-    let click = e.target
-    // let num = Number(click.innerText)
-    if (click.classList.contains("num")) {
+const calculate = (btn) =>{
+    
+    if(btn.matches(".equal") ){
         
-        current.innerText += e.target.innerText
-    }
-    if (!click.classList.contains("num") 
-    && ((!click.classList.contains("buttons"))
-    &&!click.classList.contains("container"))){
-        
-        let input = current.innerText
-        result.push(Number(input))
-        result.push(click.innerText)
-        current.innerText = ""
 
-        console.log(input)
-        console.log(result)
-    }
-    if(click.innerText == "="){
+        let preDisplayWithoutEqual = preDisplay.innerText.split("")
+        preDisplayWithoutEqual.pop()
+        preDisplay.innerText = `${preDisplayWithoutEqual.join("")}\n` 
+        
         result.forEach((item, i) =>{
-            let total = 0
+            if(item == "÷"){
+                result[i+1] = result[i-1] / result[i+1]
+            }else if(item == "x"){
+                result[i+1] = result[i-1] * result[i+1]
+            }else if(item == "-"){
+                result[i+1] = result[i-1] - result[i+1]
+            }else if(item == "+"){
+                result[i+1] = result[i-1] + result[i+1]
             
-            if(item == "+"){
-                
-                total = result[i+1]   
-                console.log(total)
             }
         })
+        
+        if(!isNaN(result[result.length - 2])){
+            currentDisplay.innerText = result[result.length - 2]
+        }    
+
     }
+}
 
 
 
-    
-    
-    
-    
-    
-})
+
+
+
+
 
 
