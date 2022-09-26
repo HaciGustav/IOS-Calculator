@@ -7,7 +7,6 @@ const allClear = (btn)=>{
         result = []
         preDisplay.innerText = ""
         currentDisplay.innerText = ""
-        return;
     }
 }
 
@@ -21,7 +20,9 @@ const negPos = (btn)=>{
 const comma = (btn)=>{
     if(btn.innerText == ","){
         if (currentDisplay.innerText.split("").includes(".")){
-            return
+            return 
+        }else if(currentDisplay.innerText == ""){
+            currentDisplay.innerText += "0."
         }else{
             currentDisplay.innerText += "."
         }
@@ -30,14 +31,14 @@ const comma = (btn)=>{
 // the function that calculates percentages
 const percentage = (btn) =>{
     if(btn.innerText == "%" && currentDisplay.innerText){
-        currentDisplay.innerText = parseFloat(currentDisplay.innerText) * 0.01
+        currentDisplay.innerText = (parseFloat(currentDisplay.innerText) * 0.01)
     }
 }
 
 
 let result = []
 document.querySelector(".buttons").addEventListener("click", (e)=>{
-    if (e.target.matches(".num")){
+    if (e.target.matches(".num") && (currentDisplay.innerText.split("").length < 10)){
         currentDisplay.innerText += e.target.innerText
     }
     else if(e.target.matches(".operator")){
@@ -47,6 +48,7 @@ document.querySelector(".buttons").addEventListener("click", (e)=>{
         
         preDisplay.innerText += currentDisplay.innerText + e.target.innerText 
         currentDisplay.innerText = ""
+        
         
         calculate(e.target)
     }else if (e.target.matches(".function") || e.target.matches(".comma") ){
@@ -62,13 +64,13 @@ document.querySelector(".buttons").addEventListener("click", (e)=>{
 
 const calculate = (btn) =>{
     
-    if(btn.matches(".equal") ){
+    if(btn.matches(".equal")){
         
 
         let preDisplayWithoutEqual = preDisplay.innerText.split("")
         preDisplayWithoutEqual.pop()
         preDisplay.innerText = `${preDisplayWithoutEqual.join("")}\n` 
-        
+
         result.forEach((item, i) =>{
             if(item == "÷"){
                 result[i+1] = result[i-1] / result[i+1]
@@ -80,6 +82,7 @@ const calculate = (btn) =>{
                 result[i+1] = result[i-1] + result[i+1]
             
             }
+            console.log(result)
         })
         
         if(!isNaN(result[result.length - 2])){
@@ -88,7 +91,6 @@ const calculate = (btn) =>{
 
     }
 }
-
 
 
 
